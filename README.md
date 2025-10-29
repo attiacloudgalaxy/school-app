@@ -322,3 +322,4 @@ Built with:
 ---
 
 **Made with ❤️ using C# and .NET**
+# school-app
