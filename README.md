@@ -321,6 +321,6 @@ Built with:
 
 ---
 
-**Made with ❤️ using C# and .NET**
+**Made with ❤️ using C# and .NET by Allah Grace and his blessing then, Mohamed Attia Aboelnil little skills**
 # school-app
 # school-app
