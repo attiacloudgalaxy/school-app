@@ -1,0 +1,14 @@
+# Build artifacts
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+.DS_Store
+
+# VS Code
+.vscode/
+
+# EF Core Migrations build cache
+Migrations/obj/

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="SchoolApp.iOS.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:SchoolApp.iOS.Pages"
+    Shell.FlyoutBehavior="Flyout"
+    Title="School Management">
+
+    <!-- Define shell content with tabs -->
+    <TabBar>
+        <ShellContent
+            Title="Home"
+            ContentTemplate="{DataTemplate pages:HomePage}"
+            Route="HomePage" />
+
+        <ShellContent
+            Title="Classes"
+            ContentTemplate="{DataTemplate pages:ClassesPage}"
+            Route="ClassesPage" />
+
+        <ShellContent
+            Title="Students"
+            ContentTemplate="{DataTemplate pages:StudentsPage}"
+            Route="StudentsPage" />
+    </TabBar>
+
+</Shell>

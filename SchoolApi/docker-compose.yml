@@ -1,0 +1,61 @@
+version: "3.9"
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: school-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: schooldb
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - school-network
+
+  # Backend API
+  schoolapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: school-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=server=mysql;port=3306;database=schooldb;user=root;password=example;
+    ports:
+      - "5178:5178"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - school-network
+    restart: unless-stopped
+
+  # Frontend Blazor App
+  schoolapp:
+    build:
+      context: ../SchoolApp
+      dockerfile: Dockerfile
+    container_name: school-app
+    ports:
+      - "8080:80"
+    depends_on:
+      - schoolapi
+    networks:
+      - school-network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+
+networks:
+  school-network:
+    driver: bridge
+

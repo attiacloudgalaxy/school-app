@@ -1,0 +1,61 @@
+@page "/classes"
+@using SchoolApp.Models
+@using SchoolApp.Services
+@inject SchoolApiService ApiService
+
+<PageTitle>Classes</PageTitle>
+
+<h1>School Classes</h1>
+
+@if (classes == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (!classes.Any())
+{
+    <p><em>No classes found.</em></p>
+}
+else
+{
+    <div class="row">
+        @foreach (var classroom in classes)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">@classroom.Name</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>Students (@classroom.Students.Count)</h6>
+                        <ul class="list-group">
+                            @foreach (var student in classroom.Students)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    @student.Name
+                                    <span class="badge bg-secondary rounded-pill">ID: @student.Id</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<Classroom>? classes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            classes = await ApiService.GetClassesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading classes: {ex.Message}");
+            classes = new List<Classroom>();
+        }
+    }
+}

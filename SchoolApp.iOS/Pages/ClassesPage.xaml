@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SchoolApp.iOS.Pages.ClassesPage"
+             Title="Classes">
+
+    <Grid RowDefinitions="Auto,*">
+        
+        <!-- Header -->
+        <Frame Grid.Row="0" 
+               BackgroundColor="{StaticResource Primary}"
+               CornerRadius="0"
+               Padding="20"
+               Margin="0">
+            <Label 
+                Text="School Classes"
+                FontSize="24"
+                FontAttributes="Bold"
+                TextColor="White"
+                HorizontalOptions="Center" />
+        </Frame>
+
+        <!-- Content -->
+        <RefreshView Grid.Row="1" 
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}"
+                     x:Name="RefreshView">
+            
+            <ScrollView>
+                <VerticalStackLayout Padding="15" Spacing="15">
+                    
+                    <!-- Loading Indicator -->
+                    <ActivityIndicator 
+                        IsRunning="{Binding IsLoading}"
+                        IsVisible="{Binding IsLoading}"
+                        Color="{StaticResource Primary}"
+                        HeightRequest="50"
+                        WidthRequest="50"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        Margin="0,50,0,0"/>
+
+                    <!-- Classes List -->
+                    <CollectionView x:Name="ClassesCollectionView"
+                                    ItemsSource="{Binding Classes}"
+                                    SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame BackgroundColor="White"
+                                       CornerRadius="15"
+                                       Padding="20"
+                                       Margin="0,0,0,15"
+                                       HasShadow="True">
+                                    <VerticalStackLayout Spacing="15">
+                                        
+                                        <!-- Class Name -->
+                                        <Label 
+                                            Text="{Binding Name}"
+                                            FontSize="22"
+                                            FontAttributes="Bold"
+                                            TextColor="{StaticResource Primary}" />
+
+                                        <!-- Divider -->
+                                        <BoxView 
+                                            Color="{StaticResource Gray200}"
+                                            HeightRequest="1"
+                                            HorizontalOptions="FillAndExpand" />
+
+                                        <!-- Students Section -->
+                                        <Label 
+                                            Text="Students:"
+                                            FontSize="16"
+                                            FontAttributes="Bold"
+                                            TextColor="{StaticResource Gray900}"
+                                            Margin="0,5,0,5" />
+
+                                        <!-- Students List -->
+                                        <CollectionView ItemsSource="{Binding Students}">
+                                            <CollectionView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Frame BackgroundColor="{StaticResource Gray100}"
+                                                           CornerRadius="8"
+                                                           Padding="12"
+                                                           Margin="0,0,0,8"
+                                                           HasShadow="False">
+                                                        <HorizontalStackLayout Spacing="10">
+                                                            <Label 
+                                                                Text="👤"
+                                                                FontSize="18"
+                                                                VerticalOptions="Center" />
+                                                            <Label 
+                                                                Text="{Binding Name}"
+                                                                FontSize="16"
+                                                                VerticalOptions="Center"
+                                                                TextColor="{StaticResource Gray900}" />
+                                                        </HorizontalStackLayout>
+                                                    </Frame>
+                                                </DataTemplate>
+                                            </CollectionView.ItemTemplate>
+                                        </CollectionView>
+
+                                        <!-- Student Count -->
+                                        <Label 
+                                            Text="{Binding Students.Count, StringFormat='Total: {0} students'}"
+                                            FontSize="14"
+                                            FontAttributes="Italic"
+                                            TextColor="{StaticResource Gray600}"
+                                            HorizontalOptions="End" />
+
+                                    </VerticalStackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <!-- Empty State -->
+                    <VerticalStackLayout 
+                        IsVisible="{Binding IsEmpty}"
+                        Spacing="20"
+                        Padding="30"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center">
+                        <Label 
+                            Text="📚"
+                            FontSize="64"
+                            HorizontalOptions="Center" />
+                        <Label 
+                            Text="No classes found"
+                            FontSize="20"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center"
+                            TextColor="{StaticResource Gray600}" />
+                        <Label 
+                            Text="Pull down to refresh"
+                            FontSize="14"
+                            HorizontalOptions="Center"
+                            TextColor="{StaticResource Gray500}" />
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </ScrollView>
+            
+        </RefreshView>
+        
+    </Grid>
+
+</ContentPage>
