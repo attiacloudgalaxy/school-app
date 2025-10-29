@@ -1,0 +1,54 @@
+name: Dependency Update Check
+
+on:
+  schedule:
+    # Run every Monday at 9:00 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  check-dependencies:
+    name: Check for Dependency Updates
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+        
+    - name: Install dotnet-outdated tool
+      run: dotnet tool install --global dotnet-outdated-tool
+      
+    - name: Check SchoolApi dependencies
+      run: |
+        echo "## SchoolApi Dependencies" >> $GITHUB_STEP_SUMMARY
+        dotnet outdated SchoolApi/SchoolApi.csproj --output json > api-outdated.json || true
+        if [ -f api-outdated.json ]; then
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          cat api-outdated.json >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        fi
+        
+    - name: Check SchoolApp dependencies
+      run: |
+        echo "## SchoolApp Dependencies" >> $GITHUB_STEP_SUMMARY
+        dotnet outdated SchoolApp/SchoolApp.csproj --output json > app-outdated.json || true
+        if [ -f app-outdated.json ]; then
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          cat app-outdated.json >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        fi
+        
+    - name: Check SchoolApp.iOS dependencies
+      run: |
+        echo "## SchoolApp.iOS Dependencies" >> $GITHUB_STEP_SUMMARY
+        dotnet outdated SchoolApp.iOS/SchoolApp.iOS.csproj --output json > ios-outdated.json || true
+        if [ -f ios-outdated.json ]; then
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          cat ios-outdated.json >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+        fi
