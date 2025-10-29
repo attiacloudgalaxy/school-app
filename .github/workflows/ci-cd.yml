@@ -190,28 +190,48 @@ jobs:
       run: |
         echo "MYSQL_ROOT_PASSWORD=testpass" > .env
         echo "MYSQL_DATABASE=schooldb" >> .env
+      working-directory: ./SchoolApi
         
     - name: Start services with Docker Compose
-      run: docker-compose up -d
+      run: docker compose up -d
       working-directory: ./SchoolApi
       
     - name: Wait for services to be healthy
       run: |
-        timeout 60 bash -c 'until docker-compose ps | grep healthy; do sleep 2; done'
+        echo "Waiting for services to start..."
+        sleep 30
+        docker compose ps
+        echo "Checking MySQL health..."
+        docker compose ps mysql | grep healthy || echo "MySQL not healthy yet"
+      working-directory: ./SchoolApi
+      
+    - name: Check service logs
+      if: failure()
+      run: docker compose logs
       working-directory: ./SchoolApi
       
     - name: Test API health endpoint
       run: |
-        sleep 10
-        curl -f http://localhost:5178/health || exit 1
+        echo "Testing API health endpoint..."
+        for i in {1..10}; do
+          if curl -f http://localhost:5178/health; then
+            echo "✅ Health check passed"
+            break
+          fi
+          echo "Attempt $i failed, retrying in 5 seconds..."
+          sleep 5
+        done
         
     - name: Test API endpoints
       run: |
-        curl -f http://localhost:5178/api/classes || exit 1
-        curl -f http://localhost:5178/api/students || exit 1
+        echo "Testing /api/classes endpoint..."
+        curl -f http://localhost:5178/api/classes -v
+        echo ""
+        echo "Testing /api/students endpoint..."
+        curl -f http://localhost:5178/api/students -v
         
     - name: Stop services
-      run: docker-compose down -v
+      run: docker compose down -v
       working-directory: ./SchoolApi
       if: always()
 
