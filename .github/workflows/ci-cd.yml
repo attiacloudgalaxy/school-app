@@ -1,5 +1,5 @@
 name: CI/CD Pipeline
-
+#
 # This workflow builds, tests, and validates the School Management System
 # For Docker Hub publishing, configure DOCKER_USERNAME and DOCKER_PASSWORD secrets
 # See GITHUB-ACTIONS.md for complete setup instructions
